@@ -7,7 +7,7 @@ use Illuminate\Console\Command;
 use Intervention\Image\Facades\Image;
 use Telegram\Bot\Laravel\Facades\Telegram;
 use Telegram\Bot\Objects\Update;
-
+use Illuminate\Support\Facades\Storage;
 class GetUpdates extends Command
 {
     /**
@@ -44,41 +44,43 @@ class GetUpdates extends Command
 
         $offset = (int)TelegramMessage::where('telegramid', '<>', 0)->orderBy('telegramid', 'desc')->value("telegramid");
         $offset++;
-        $offsetArray = ['offset'=>$offset];
+        $offsetArray = ['offset' => $offset];
         $response = Telegram::getUpdates($offsetArray);
         //var_dump($offset);
-        foreach($response as $update){
+        foreach ($response as $update) {
             /** @var Update $update */
             $telegramMessage = $update->getMessage();
-            $type =$telegramMessage->detectType();
+            $type = $telegramMessage->detectType();
             var_dump($type);
-            if($type =='text' || $type == 'photo') {
+            if ($type == 'text' || $type == 'photo') {
                 $dbMessage = new TelegramMessage();
                 $dbMessage->text = $telegramMessage->getText();
                 $dbMessage->telegramid = $update->getUpdateId();
-                if($type == 'photo'){
+                if ($type == 'photo') {
                     $dbMessage->text = "";
                     $photos = $telegramMessage->getPhoto();
-                    $photo = $photos[count($photos)-1];
+                    $photo = $photos[count($photos) - 1];
                     $photoID = $photo['file_id'];
-                    $photoFile = Telegram::getFile(["file_id"=>$photoID]);
+                    $photoFile = Telegram::getFile(["file_id" => $photoID]);
                     $filePath = $photoFile["file_path"];
                     $token = Telegram::getBotConfig();
                     $token = $token['token'];
-                    $path = sprintf("https://api.telegram.org/file/bot%s/%s",$token,$filePath);
+                    $path = sprintf("https://api.telegram.org/file/bot%s/%s", $token, $filePath);
                     $file = file_get_contents($path);
 
                     $img = Image::make($file);
-                    $fileName = sprintf("imagestorage/%s.jpg",$update->getUpdateId());
-                    $img->save($fileName);
+                    $fileName = sprintf("public/images/%s.jpg", $update->getUpdateId());
+
+                    $fileContents = $img->encode('jpg', 100);
+                    Storage::put($fileName, $fileContents);
+
                     $dbMessage->image = $fileName;
+                    $dbMessage->username = $telegramMessage->getFrom()->getUsername();
                 }
 
 
                 $dbMessage->save();
             }
-
-
 
 
         }
