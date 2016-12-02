@@ -1,0 +1,30 @@
+[
+{
+"timestamp":"1454677200000",
+"artist":"Mario Barth TV Show",
+"city":"",
+"location":"Pro7",
+"ticket_url":""
+},
+{
+"timestamp":"1454196600000",
+"artist":"Abby",
+"city":"Berlin",
+"location":"Watergate",
+"ticket_url":"https://www.bandsintown.com/event/11014725?artist=Abby&came_from=122"
+},
+{
+"timestamp":"1454194800000",
+"artist":"Rosario",
+"city":"Berlin",
+"location":"Beate Uwe",
+"ticket_url":"http://www.residentadvisor.net/event.aspx?788593"
+},
+{
+"timestamp":"1455134400000",
+"artist":"Deichkind",
+"city":"Berlin",
+"location":"Max-Schmeling-Halle",
+"ticket_url":"http://www.ticketcorner.ch/deichkind-berlin-Tickets.html?affiliate=BIT&doc=artistPages%2Ftickets&fun=artist&action=tickets&key=1399585%246405234&jumpIn=yTix&kuid=&hideArtist=true&from=erdetaila&language=en"
+}
+]
